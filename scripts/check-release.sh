@@ -34,18 +34,28 @@ awk -v expected="$EXPECTED" '
     END { if (!found) exit 1 }
 ' daemon/main.go || fail "daemonversie wijkt af"
 
+awk -v expected="$EXPECTED" '
+    index($0, "property string displayVersion: \"" expected "\"") { found = 1 }
+    END { if (!found) exit 1 }
+' ToonmqttSettings.qml || fail "zichtbare versie in Status en diagnose wijkt af"
+
 for path in \
-    ToonmqttApp.qml ToonmqttTile.qml ToonmqttSettings.qml qmldir \
+    ToonmqttApp.qml ToonmqttTile.qml ToonmqttSettings.qml \
+    PointSettingRow.qml TabButton.qml qmldir \
     toonmqtt.sh S99toon-mqtt.sh toon-mqtt-service.sh toon_mqtt_client \
     Changelog.txt description/description.txt \
     drawables/MqttLogo.svg drawables/MqttLogoThumbnail.png \
     drawables/ToonmqttIcon.svg \
     home-assistant/blueprints/automation/toonmqtt/zonneplan_energy_bridge.yaml \
     docs/images/toonmqtt_screenshot_1.png \
-    docs/images/toonmqtt_screenshot_2.png
+    docs/images/toonmqtt_screenshot_2.png \
+    docs/images/toonmqtt_screenshot_3.png \
+    docs/images/toonmqtt_screenshot_4.png
 do
     [ -s "$path" ] || fail "vereist bestand ontbreekt of is leeg: $path"
 done
+
+[ -s docs/SECURITY.md ] || fail "veiligheidsdocumentatie ontbreekt"
 
 [ -x toon_mqtt_client ] || fail "toon_mqtt_client is niet uitvoerbaar"
 [ -x toonmqtt.sh ] || fail "toonmqtt.sh is niet uitvoerbaar"
